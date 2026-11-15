@@ -1,6 +1,6 @@
-================================================================
+
  phonemizer
-================================================================
+============
 
 A minimal Ruby wrapper around espeak-ng for simple word-to-IPA
 phonemization, with caching and parallelism.
