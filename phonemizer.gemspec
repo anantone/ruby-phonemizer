@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = "Minimal espeak-ng wrapper for phonemization"
   spec.description   = "A thin Ruby wrapper around espeak-ng CLI for simple " \
                        "word-to-IPA phonemization with caching and parallelism."
-  spec.homepage      = "[https://github.com/you/phonemizer]"
+  spec.homepage      = "https://github.com/anantone/ruby-phonemizer.git"
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 3.0"
 
