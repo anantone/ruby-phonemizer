@@ -88,6 +88,8 @@ module Phonemizer
 
   def phonemize_batch(words, language:, phone_sep:, word_sep:,
                       strip_stress:, language_switch:)
+    # Guard for nil
+    words = words.map { |w| w.to_s }  # Convert nil to empty string
     # Cache: word forms repeat constantly across a lexicon
     key = ->(w) { [w, language, phone_sep, word_sep, strip_stress] }
     todo = words.reject { |w| @cache.key?(key.call(w)) }.uniq
@@ -143,16 +145,23 @@ module Phonemizer
       next part if part =~ PUNCT                     # punctuation: verbatim
       t = ipa_map[part] || ""
       t = t.gsub(LANG_SWITCH, "") if language_switch == :remove
-      # Strip stress markers and espeak's liaison/join hyphen
-      # (e.g. "les amis" -> "le-z ami" where '-' marks the liaison)
-      t = t.delete("ˈˌ'-") if strip_stress
+      # Strip stress marks always; strip the liaison hyphen only in contiguous
+      # mode, where espeak emits it (e.g. "les amis" -> "le-z ami"). In --sep
+      # mode a "-" is a user-chosen phone separator, never a liaison marker,
+      # so it must survive.
+      if strip_stress
+        t = t.delete("ˈˌ")
+        t = t.delete("-") if phone_sep.empty?
+      end
       if phone_sep.empty?
         # contiguous phones: a plain space is a word boundary
         t = t.gsub(" ", word_sep)
       else
-        # --sep was requested: single spaces are phone separators,
-        # double spaces are word boundaries
-        t = t.gsub(/ (?! )/, phone_sep).gsub("  ", word_sep)
+        # --sep was requested: single spaces are phone separators, double
+        # spaces are word boundaries. Protect the boundaries first, otherwise
+        # the single-space substitution consumes one half of every double
+        # space and the word boundary is lost.
+        t = t.gsub("  ", "\x00").gsub(" ", phone_sep).gsub("\x00", word_sep)
       end
       t
     end.join
