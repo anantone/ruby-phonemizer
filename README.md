@@ -74,8 +74,8 @@ Phonemizer.phonemize("tableau", language: "fr-fr", phone_sep: " ")
 Keep the language-switch markers espeak emits mid-utterance:
 
 ```ruby
-Phonemizer.phonemize("le wifi", language: "fr-fr", language_switch: :keep)
-# => "lə (fr) wifi"
+Phonemizer.phonemize("le célèbre Schwarzenegger", language: "fr-fr", language_switch: :keep)
+"lə selɛbʁ (en)ʃwɔːzənɛɡə(fr)"
 ```
 
 
@@ -86,14 +86,14 @@ Punctuation is preserved verbatim and never sent to espeak, so whole sentences p
 
 ```ruby
 Phonemizer.phonemize("Bonjour, comment ça va ?", language: "fr-fr")
-# => "bɔ̃ʒuʁ, kɔmɑ̃ sa va ?"
+# => "bɔ̃ʒuʁ,kɔmɑ̃ sa va?"
 ```
 
 Apostrophes are kept inside the word on purpose, so elisions stay intact and liaison consonants aren't lost:
 
 ```ruby
 Phonemizer.phonemize("aujourd'hui", language: "fr-fr")
-# => "oʒuʁdɥi"
+# => "oʒuʁdyi"
 ```
 
 

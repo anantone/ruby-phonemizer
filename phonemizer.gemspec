@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 3.0"
 
-  spec.files         = Dir["lib/**/*.rb", "README.md", "LICENSE"]
+  spec.files         = Dir["lib/**/*.rb", "README.md", "LICENSE", "CHANGELOG.md"]
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "rake"
