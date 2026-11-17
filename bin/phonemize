@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require "phonemize"
+require "phonemizer"
 
 text = ARGV.join(" ")
-puts Phonemize.phonemize(text)
+puts Phonemizer.phonemize(text)
