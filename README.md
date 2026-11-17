@@ -10,7 +10,7 @@ A minimal Ruby wrapper around [espeak-ng](https://github.com/espeak-ng/espeak-ng
 Requirements
 ----------------------------------------------------------------
 
-- Ruby 3.0+
+- Ruby 3.1+
 - **espeak-ng** command-line tool must be installed:
   ```bash
   apt install espeak-ng     # Debian/Ubuntu
