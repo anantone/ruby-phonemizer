@@ -5,6 +5,7 @@ require_relative 'lib/phonemizer/version'
 Gem::Specification.new do |spec|
   spec.name          = 'phonemizer'
   spec.version       = Phonemizer::VERSION
+  spec.executables = ["phonemize"]  
   spec.authors       = 'anantone'
   spec.email         = 'self@anantone.me'
 
