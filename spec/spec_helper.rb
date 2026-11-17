@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "phonemizer"
+require 'phonemizer'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
@@ -25,6 +25,6 @@ end
 def espeak_available?
   return @espeak_available if defined?(@espeak_available)
 
-  @espeak_available = system("espeak-ng", "--version",
+  @espeak_available = system('espeak-ng', '--version',
                              out: File::NULL, err: File::NULL)
 end

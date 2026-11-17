@@ -4,7 +4,7 @@ phonemizer
 [![Gem Version](https://img.shields.io/gem/v/phonemizer.svg)](https://rubygems.org/gems/phonemizer)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A minimal Ruby wrapper around espeak-ng for simple word-to-IPA phonemization, with caching and parallelism.
+A minimal Ruby wrapper around [espeak-ng](https://github.com/espeak-ng/espeak-ng) for simple word-to-IPA phonemization, with caching and parallelism. Supports [these languages](https://github.com/espeak-ng/espeak-ng/blob/master/docs/languages.md).
 
 
 Requirements
