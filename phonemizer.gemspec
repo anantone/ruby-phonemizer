@@ -8,12 +8,12 @@ Gem::Specification.new do |spec|
   spec.authors       = 'anantone'
   spec.email         = 'self@anantone.me'
 
-  spec.summary       = 'Minimal espeak-ng wrapper for phonemization'
+  spec.summary       = 'Minimal espeak-ng wrapper for multilingual phonemization'
   spec.description   = 'A thin Ruby wrapper around espeak-ng CLI for simple ' \
                        'word-to-IPA phonemization with caching and parallelism.'
   spec.homepage      = 'https://github.com/anantone/ruby-phonemizer'
   spec.license       = 'MIT'
-  spec.required_ruby_version = '>= 3.0'
+  spec.required_ruby_version = '>= 3.1'
 
   spec.files         = Dir['lib/**/*.rb', 'README.md', 'LICENSE', 'CHANGELOG.md']
   spec.require_paths = ['lib']

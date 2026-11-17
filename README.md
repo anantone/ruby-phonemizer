@@ -60,7 +60,8 @@ Phonemizer.phonemize(
   phone_sep:       "",         # separator between phones ("" = contiguous)
   word_sep:        " ",        # separator between words in one utterance
   strip_stress:    true,       # remove stress marks and liaison hyphens
-  language_switch: :remove     # :remove or :keep, for inline (fr)/(en) tags
+  language_switch: :remove,    # :remove or :keep, for inline (fr)/(en) tags
+  workers:         DEFAULT_WORKERS  # parallel espeak-ng calls (default: CPUs - 1)
 )
 ```
 
@@ -137,6 +138,7 @@ Phonemize text to IPA. Returns a String for String input, Array for Array input.
 - `word_sep` — separator between words in multi-word input (default: `" "`)
 - `strip_stress` — remove stress marks ˈ ˌ and liaison hyphens (default: `true`)
 - `language_switch` — `:remove` or `:keep` for inline language tags (default: `:remove`)
+- `workers` — max parallel espeak-ng calls (default: `Phonemizer::DEFAULT_WORKERS`, CPU count - 1, min 1)
 
 ### `Phonemizer.espeak_raw(text, language, phone_sep: nil)`
 

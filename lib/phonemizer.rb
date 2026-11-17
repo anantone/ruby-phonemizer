@@ -46,14 +46,16 @@ module Phonemizer
   #   word_sep:        joins multiword utterances,  default " "
   #   strip_stress:    remove ˈ ˌ from output,     default true
   #   language_switch: :remove (default) or :keep
+  #   workers:         espeak-ng calls in flight, default DEFAULT_WORKERS
   def phonemize(words, language: DEFAULT_LANGUAGE, phone_sep: "",
-                word_sep: " ", strip_stress: true, language_switch: :remove)
+                word_sep: " ", strip_stress: true, language_switch: :remove,
+                workers: DEFAULT_WORKERS)
     if words.is_a?(Array)
       phonemize_batch(words, language:, phone_sep:, word_sep:,
-                      strip_stress:, language_switch:)
+                      strip_stress:, language_switch:, workers:)
     else
       phonemize_batch([words], language:, phone_sep:, word_sep:,
-                      strip_stress:, language_switch:).first
+                      strip_stress:, language_switch:, workers:).first
     end
   end
 
@@ -69,7 +71,7 @@ module Phonemizer
     args = ["espeak-ng", "-q", "--ipa", "-v", language]
     # --sep only when explicitly requested: some espeak-ng builds reject it,
     # and the default contiguous IPA output needs no separator anyway.
-    args << "--sep=#{phone_sep}" if phone_sep && !phone_sep.empty?
+    args << "--sep=#{phone_sep}" unless phone_sep.to_s.empty?
     args << "--stdin"
 
     # NB: text + "\n", not text << "\n" — << would mutate the caller's
@@ -87,49 +89,54 @@ module Phonemizer
   # ---------------------------------------------------------------- pipeline
 
   def phonemize_batch(words, language:, phone_sep:, word_sep:,
-                      strip_stress:, language_switch:)
-    # Guard for nil
-    words = words.map { |w| w.to_s }  # Convert nil to empty string
-    # Cache: word forms repeat constantly across a lexicon
-    key = ->(w) { [w, language, phone_sep, word_sep, strip_stress] }
-    todo = words.reject { |w| @cache.key?(key.call(w)) }.uniq
+                      strip_stress:, language_switch:, workers: DEFAULT_WORKERS)
+    # Guard for nil: only copy when some element isn't already a String
+    words = words.map(&:to_s) unless words.all? { |w| w.is_a?(String) }
+    # Cache: word forms repeat constantly across a lexicon. Options are
+    # fixed for the whole call, so the key is a pure function of the word —
+    # memoize it to build each key array only once per unique word.
+    key_of = Hash.new do |h, w|
+      h[w] = [w, language, phone_sep, word_sep, strip_stress, language_switch]
+    end
+    todo = words.uniq.reject { |w| @cache.key?(key_of[w]) }
 
     unless todo.empty?
       # Punctuation handling: split utterances on punctuation, transcribe
       # only the clean chunks, splice punctuation back by position
       chunks = todo.map { |w| split_punctuation(w) }
 
-      clean_words = chunks.flatten.reject { |p| p =~ PUNCT }.uniq
-      ipa_map = transcribe_all(clean_words, language, phone_sep)
+      clean_words = chunks.flatten.reject { |p| PUNCT.match?(p) }.uniq
+      ipa_map = transcribe_all(clean_words, language, phone_sep, workers:)
 
       todo.each_with_index do |w, i|
-        @cache[key.call(w)] = stitch(chunks[i], ipa_map,
-                                     phone_sep:, word_sep:, strip_stress:,
-                                     language_switch:)
+        @cache[key_of[w]] = stitch(chunks[i], ipa_map,
+                                   phone_sep:, word_sep:, strip_stress:,
+                                   language_switch:)
       end
     end
 
-    words.map { |w| @cache[key.call(w)] }
+    words.map { |w| @cache[key_of[w]] }
   end
 
   # One espeak-ng call per piece (per-line isolation), drained by a
   # machine-dependent pool of worker threads.
   def transcribe_all(pieces, language, phone_sep, workers: DEFAULT_WORKERS)
     queue = Queue.new
+    workers = [workers, pieces.size].min
     pieces.each { |p| queue << p }
     workers.times { queue << nil }        # poison pills: one per worker
 
-    results = Array.new(workers) { [] }
+    results = Array.new(workers) { {} }
     threads = Array.new(workers) do |i|
       Thread.new do
         while (piece = queue.pop)
-          results[i] << [piece, espeak_raw(piece, language, phone_sep:).strip]
+          results[i][piece] = espeak_raw(piece, language, phone_sep:).strip
         end
       end
     end
     threads.each(&:join)
 
-    results.each_with_object({}) { |pairs, map| map.merge!(pairs.to_h) }
+    results.each_with_object({}) { |h, map| map.merge!(h) }
   end
 
   # utterance -> [punct, word, punct, word, ...]
@@ -142,7 +149,7 @@ module Phonemizer
   def stitch(parts, ipa_map, phone_sep:, word_sep:, strip_stress:,
              language_switch:)
     parts.map do |part|
-      next part if part =~ PUNCT                     # punctuation: verbatim
+      next part if PUNCT.match?(part)               # punctuation: verbatim
       t = ipa_map[part] || ""
       t = t.gsub(LANG_SWITCH, "") if language_switch == :remove
       # Strip stress marks always; strip the liaison hyphen only in contiguous
