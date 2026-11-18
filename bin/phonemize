@@ -3,4 +3,9 @@
 require "phonemizer"
 
 text = ARGV.join(" ")
-puts Phonemizer.phonemize(text)
+if File.file?(text)
+  lines = File.readlines(text, chomp: true).reject(&:empty?)
+  Phonemizer.phonemize(lines).each { |line| puts line }
+else
+  puts Phonemizer.phonemize(text)
+end
