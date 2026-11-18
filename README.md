@@ -80,6 +80,35 @@ Phonemizer.phonemize("le célèbre Schwarzenegger", language: "fr-fr", language_
 ```
 
 
+Command line
+----------------------------------------------------------------
+
+The `phonemize` executable exposes the same options as flags. Pass text as arguments, or a file path to phonemize it line by line:
+
+```bash
+phonemize "hello world"
+phonemize -l fr-fr "les amis"
+phonemize -l fr-fr words.txt > words.ipa
+```
+
+```bash
+phonemize --help
+# Usage: phonemize [options] [text | file]
+#     -l, --language LANG           espeak voice (default: en-us)
+#     -p, --phone-sep SEP           separator between phones (default: none)
+#     -w, --word-sep SEP            separator between words (default: space)
+#     -s, --[no-]strip-stress       strip stress marks and liaison hyphens (default: yes)
+#     -k, --keep-language-switch    keep inline (en)/(fr) language tags (default: remove)
+#     -j, --workers N               parallel espeak-ng calls (default: CPUs - 1)
+#     -h, --help                    show this help
+```
+
+```bash
+phonemize -l fr-fr -p " " tableau
+# => t a b l o
+```
+
+
 Punctuation
 ----------------------------------------------------------------
 

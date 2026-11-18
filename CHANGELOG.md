@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.5.0 - 2026-11-18
+
+- Add option flags to the `phonemize` executable — `-l/--language`, `-p/--phone-sep`, `-w/--word-sep`, `-s/--[no-]strip-stress`, `-k/--keep-language-switch`, `-j/--workers`, `-h/--help` — forwarded as keyword options to `Phonemizer.phonemize`; document command-line usage in README
+- Bump version to 0.5.0
+
+## 0.4.1 - 2026-11-18
+
+- Add file handling to the `phonemize` executable: a file path argument is phonemized line by line (747f019 "Add file handling for phonemization input")
+- Bump version to 0.4.1
+
+## 0.4.0 - 2026-11-17
+
+- Fix `phonemize` executable: `require "phonemizer"` and call `Phonemizer.phonemize` so the bin actually loads (fef5376 "Fix executable")
+- Bump version to 0.4.0
+
 ## 0.3.0 - 2026-11-17
 
 - Add `phonemize` executable (`bin/phonemize`), registered via `spec.executables` in the gemspec (46e6b24 "Add executable")

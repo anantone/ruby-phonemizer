@@ -1,11 +1,42 @@
 #!/usr/bin/env ruby
 
+require "optparse"
 require "phonemizer"
+
+options = {
+  language: Phonemizer::DEFAULT_LANGUAGE,
+  phone_sep: "",
+  word_sep: " ",
+  strip_stress: true,
+  language_switch: :remove,
+  workers: Phonemizer::DEFAULT_WORKERS
+}
+
+parser = OptionParser.new do |o|
+  o.banner = "Usage: phonemize [options] [text | file]"
+  o.on("-l", "--language LANG",
+       "espeak voice (default: #{Phonemizer::DEFAULT_LANGUAGE})") { |v| options[:language] = v }
+  o.on("-p", "--phone-sep SEP",
+       "separator between phones (default: none)") { |v| options[:phone_sep] = v }
+  o.on("-w", "--word-sep SEP",
+       "separator between words in one utterance (default: space)") { |v| options[:word_sep] = v }
+  o.on("-s", "--[no-]strip-stress",
+       "strip stress marks and liaison hyphens (default: yes)") { |v| options[:strip_stress] = v }
+  o.on("-k", "--keep-language-switch",
+       "keep inline (en)/(fr) language tags (default: remove)") { options[:language_switch] = :keep }
+  o.on("-j", "--workers N", Integer,
+       "parallel espeak-ng calls (default: #{Phonemizer::DEFAULT_WORKERS})") { |v| options[:workers] = v }
+  o.on("-h", "--help", "show this help") do
+    puts o
+    exit
+  end
+end
+parser.parse!(ARGV)
 
 text = ARGV.join(" ")
 if File.file?(text)
   lines = File.readlines(text, chomp: true).reject(&:empty?)
-  Phonemizer.phonemize(lines).each { |line| puts line }
+  Phonemizer.phonemize(lines, **options).each { |line| puts line }
 else
-  puts Phonemizer.phonemize(text)
+  puts Phonemizer.phonemize(text, **options)
 end
