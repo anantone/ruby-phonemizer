@@ -186,11 +186,17 @@ Clear the internal phonemization cache. Returns the new empty cache Hash.
 Reading from a File
 ----------------------------------------------------------------
 
-`phonemize` accepts any Array of Strings, so a wordlist is a one-liner:
+On the command line, just pass a file path — the executable phonemizes it line by line (see [Command line](#command-line)):
+
+```bash
+phonemize -l fr-fr words.txt > words.ipa
+```
+
+In Ruby, `phonemize` accepts any Array of Strings and returns an Array in the same order, so a wordlist is a one-liner when you want the result in memory:
 
 ```ruby
 lines = File.readlines("words.txt", chomp: true).reject(&:empty?)
-File.write("words.ipa", Phonemizer.phonemize(lines, language: "fr-fr").join("\n"))
+ipa = Phonemizer.phonemize(lines, language: "fr-fr") # Array of IPA strings, same order
 ```
 
 
