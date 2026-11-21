@@ -6,6 +6,8 @@ phonemizer
 
 A minimal Ruby wrapper around [espeak-ng](https://github.com/espeak-ng/espeak-ng) for simple word-to-IPA phonemization, with caching and parallelism. Supports [these languages](https://github.com/espeak-ng/espeak-ng/blob/master/docs/languages.md).
 
+> **Phonemizing a large batch?** Each word here costs one fork+exec of the `espeak-ng` CLI. For big lexicons, see [`phonemizer_ffi`](https://rubygems.org/gems/phonemizer_ffi) — a drop-in replacement with the same `Phonemizer.phonemize` API that calls `libespeak-ng` in-process via FFI instead (no process spawned per word), typically ~40x faster on batches, with the same output.
+
 
 Requirements
 ----------------------------------------------------------------
