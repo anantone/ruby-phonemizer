@@ -50,6 +50,12 @@ RSpec.describe Phonemizer do
     it 'never yields empty chunks' do
       expect(described_class.split_punctuation('...')).to eq(['...'])
     end
+
+    it 'keeps a multi-word chunk whole so cross-word liaison can happen' do
+      # A space is not punctuation: "les amis" stays one chunk, so espeak-ng
+      # sees both words together and emits the liaison ("le-z amˈi").
+      expect(described_class.split_punctuation('les amis')).to eq(['les amis'])
+    end
   end
 
   describe '.stitch' do
@@ -86,33 +92,35 @@ RSpec.describe Phonemizer do
       expect(result).to eq('vi (fr) fi')
     end
 
-    it 'strips stress marks and liaison hyphens when strip_stress' do
-      parts = ['amis']
-      m = { 'amis' => 'a-miˈ' }
+    it 'keeps the liaison consonant and strips the liaison hyphen when strip_stress' do
+      # espeak-ng emits "le-z amˈi" for "les amis": the - marks the liaison
+      # (final s of "les" pronounced [z] before the vowel of "amis").
+      parts = ['les amis']
+      m = { 'les amis' => 'le-z amˈi' }
       result = described_class.stitch(parts, m, phone_sep: '', word_sep: ' ',
                                                 strip_stress: true, language_switch: :remove)
-      expect(result).to eq('ami')
+      expect(result).to eq('lez ami')
     end
 
-    it 'leaves stress marks in place when not stripping' do
-      parts = ['amis']
-      m = { 'amis' => 'a-miˈ' }
+    it 'leaves stress marks and the liaison hyphen in place when not stripping' do
+      parts = ['les amis']
+      m = { 'les amis' => 'le-z amˈi' }
       result = described_class.stitch(parts, m, phone_sep: '', word_sep: ' ',
                                                 strip_stress: false, language_switch: :remove)
-      expect(result).to eq('a-miˈ')
+      expect(result).to eq('le-z amˈi')
     end
 
     it 'treats a single space as a word boundary when phone_sep is empty' do
-      parts = ['lesamis']
-      m = { 'lesamis' => 'le ami' }
+      parts = ['les amis']
+      m = { 'les amis' => 'le ami' }
       result = described_class.stitch(parts, m, phone_sep: '', word_sep: ' _ ',
                                                 strip_stress: true, language_switch: :remove)
       expect(result).to eq('le _ ami')
     end
 
     it 'uses phone_sep for single spaces and word_sep for double spaces' do
-      parts = ['lesamis']
-      m = { 'lesamis' => 'l e  a m i' }
+      parts = ['les amis']
+      m = { 'les amis' => 'l e  a m i' }
       result = described_class.stitch(parts, m, phone_sep: '-', word_sep: ' ',
                                                 strip_stress: true, language_switch: :remove)
       expect(result).to eq('l-e a-m-i')

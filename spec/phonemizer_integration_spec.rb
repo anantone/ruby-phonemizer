@@ -48,6 +48,23 @@ RSpec.describe 'Phonemizer integration', skip: !espeak_available? &&
       expect(result).not_to include(' ')
     end
 
+    it 'performs the liaison in a multi-word utterance (les amis)' do
+      # espeak-ng emits "le-z amˈi": the final s of "les" is pronounced [z]
+      # before the vowel of "amis". The liaison consonant must survive;
+      # only the "-" marker (and stress) may be stripped.
+      result = Phonemizer.phonemize('les amis', language: 'fr-fr')
+      expect(result).to include('z')     # liaison consonant pronounced
+      expect(result).not_to include('-') # liaison hyphen stripped (contiguous mode)
+    end
+
+    it 'does not liaison across separate batch elements (per-word isolation)' do
+      # Each array element is its own espeak-ng call, so "les" alone has no
+      # following vowel and its final s stays silent: no liaison by design.
+      batch = Phonemizer.phonemize(%w[les amis], language: 'fr-fr')
+      expect(batch.length).to eq(2)
+      expect(batch.join).not_to include('z')
+    end
+
     it 'inserts phone_sep between phones when requested' do
       result = Phonemizer.phonemize('tableau', language: 'fr-fr',
                                                phone_sep: '.')
