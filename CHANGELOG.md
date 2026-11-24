@@ -2,7 +2,8 @@
 
 ## 0.5.1 - 2026-11-24
 
-- RDoc: document the remaining public methods (`clear_cache`, `phonemize_batch` with `@param`/`@return`); add an `rdoc` task to the Rakefile (`rake rdoc` generates the HTML docs, README as home page) and `rdoc` as a development dependency. Documentation-only change
+- RDoc: document the remaining public methods (`clear_cache`, `phonemize_batch` with `@param`/`@return`); add an `rdoc` task to the Rakefile (`rake rdoc` generates the HTML docs, README as home page) and `rdoc` as a development dependency
+- YARD support for rubydoc.info: `.yardopts` file (markdown markup, README as front page), `rake yard` task in the Rakefile (aliased as `rake doc`, generates `doc/`); `yard` and `kramdown` added as development dependencies; gemspec metadata (`source_code_uri`, `changelog_uri`, `bug_tracker_uri`, `documentation_uri`) pointing at the GitHub repo and `https://rubydoc.info/gems/phonemizer`; documentation link added to the README. Documentation-only change
 
 ## 0.5.0 - 2026-11-18
 
