@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1 - 2026-11-24
+
+- RDoc: document the remaining public methods (`clear_cache`, `phonemize_batch` with `@param`/`@return`); add an `rdoc` task to the Rakefile (`rake rdoc` generates the HTML docs, README as home page) and `rdoc` as a development dependency. Documentation-only change
+
 ## 0.5.0 - 2026-11-18
 
 - Add option flags to the `phonemize` executable — `-l/--language`, `-p/--phone-sep`, `-w/--word-sep`, `-s/--[no-]strip-stress`, `-k/--keep-language-switch`, `-j/--workers`, `-h/--help` — forwarded as keyword options to `Phonemizer.phonemize`; document command-line usage in README

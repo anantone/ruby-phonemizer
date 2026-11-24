@@ -59,6 +59,8 @@ module Phonemizer
     end
   end
 
+  # Clears the word -> phonemization cache. Useful between unrelated
+  # batches (to free memory) or after an espeak-ng upgrade (stale entries).
   def clear_cache
     @cache = {}
   end
@@ -88,6 +90,18 @@ module Phonemizer
 
   # ---------------------------------------------------------------- pipeline
 
+  # Phonemizes a whole batch of words, fanning the espeak-ng calls out over
+  # +workers+ parallel processes. This is the fast path for large lexicons:
+  # prefer it over calling #phonemize in a loop (one fork+exec per word).
+  #
+  # @param words [Array<String>] the words (or short utterances) to phonemize
+  # @param language [String] espeak-ng voice, e.g. "fr" (default "en-us")
+  # @param phone_sep [String] inserted between phonemes, default ""
+  # @param word_sep [String] joins multiword utterances, default " "
+  # @param strip_stress [Boolean] remove espeak-ng stress marks (ˈ ˌ)
+  # @param language_switch [Symbol] :remove (default) or :keep language tags
+  # @param workers [Integer] espeak-ng processes kept in flight
+  # @return [Array<String>] one phonemization per input word, in order
   def phonemize_batch(words, language:, phone_sep:, word_sep:,
                       strip_stress:, language_switch:, workers: DEFAULT_WORKERS)
     # Guard for nil: only copy when some element isn't already a String

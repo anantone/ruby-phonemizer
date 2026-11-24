@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>RDoc Documentation</title>
+
+
+  <meta name="keywords" content="ruby,documentation,RDoc Documentation">
+
+    <meta
+      name="description"
+      content="RDoc Documentation: img. shields."
+    >
+
+
+
+
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="RDoc Documentation">
+
+
+  <meta
+    property="og:description"
+    content="API documentation for RDoc Documentation - Browse classes, modules, and methods"
+  >
+
+
+
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RDoc Documentation">
+
+
+  <meta
+    name="twitter:description"
+    content="API documentation for RDoc Documentation - Browse classes, modules, and methods"
+  >
+
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+  var index_rel_prefix = "./";
+</script>
+
+<script
+  src="./js/theme-toggle.js?v=8.1.0"
+></script>
+
+<script
+  src="./js/search_navigation.js?v=8.1.0"
+  defer
+></script>
+
+<script
+  src="./js/search_data.js?v=8.1.0"
+  defer
+></script>
+
+<script
+  src="./js/search_ranker.js?v=8.1.0"
+  defer
+></script>
+
+<script
+  src="./js/search_controller.js?v=8.1.0"
+  defer
+></script>
+
+<script
+  src="./js/c_highlighter.js?v=8.1.0"
+  defer
+></script>
+
+<script
+  src="./js/bash_highlighter.js?v=8.1.0"
+  defer
+></script>
+
+<script
+  src="./js/aliki.js?v=8.1.0"
+  defer
+></script>
+
+<link
+  href="./css/rdoc.css?v=8.1.0"
+  rel="stylesheet"
+>
+
+
+
+
+<body role="document" class="file has-toc">
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <!-- Chevron (right arrow) - used for expand/collapse -->
+  <symbol
+    id="icon-chevron"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </symbol>
+
+  <!-- File/Document - Pages section -->
+  <symbol
+    id="icon-file"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path
+      d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+    ></path>
+
+    <polyline points="14 2 14 8 20 8"></polyline>
+  </symbol>
+
+  <!-- Layers/Stack - Classes and Modules section -->
+  <symbol
+    id="icon-layers"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+    <polyline points="2 17 12 22 22 17"></polyline>
+    <polyline points="2 12 12 17 22 12"></polyline>
+  </symbol>
+
+  <!-- Curly braces with C - Class Methods section -->
+  <symbol
+    id="icon-class-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      C
+    </text>
+  </symbol>
+
+  <!-- Curly braces with I - Instance Methods section -->
+  <symbol
+    id="icon-instance-methods"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 3C3.5 3 2 4.5 2 7v3c0 1.5-1 2-1 2s1 .5 1 2v5c0 2.5 1.5 4 4 4"></path>
+    <path d="M18 3c2.5 0 4 1.5 4 4v3c0 1.5 1 2 1 2s-1 .5-1 2v5c0 2.5-1.5 4-4 4"></path>
+
+    <text
+      x="12"
+      y="17"
+      text-anchor="middle"
+      font-size="13"
+      font-weight="bold"
+      fill="currentColor"
+      stroke="none"
+    >
+      I
+    </text>
+  </symbol>
+
+  <!-- Double chevrons up - Ancestors section -->
+  <symbol
+    id="icon-ancestors"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="17 11 12 6 7 11"></polyline>
+    <polyline points="17 18 12 13 7 18"></polyline>
+  </symbol>
+
+  <!-- User with plus - Included Modules section -->
+  <symbol
+    id="icon-includes"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+
+    <line
+      x1="20"
+      y1="8"
+      x2="20"
+      y2="14"
+    ></line>
+
+    <line
+      x1="23"
+      y1="11"
+      x2="17"
+      y2="11"
+    ></line>
+  </symbol>
+
+  <!-- User with check - Extended Modules section -->
+  <symbol
+    id="icon-extends"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+    <circle cx="8.5" cy="7" r="4"></circle>
+    <polyline points="17 11 19 13 23 9"></polyline>
+  </symbol>
+
+  <!-- List - Sections section -->
+  <symbol
+    id="icon-list"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <line
+      x1="8"
+      y1="6"
+      x2="21"
+      y2="6"
+    ></line>
+
+    <line
+      x1="8"
+      y1="12"
+      x2="21"
+      y2="12"
+    ></line>
+
+    <line
+      x1="8"
+      y1="18"
+      x2="21"
+      y2="18"
+    ></line>
+
+    <line
+      x1="3"
+      y1="6"
+      x2="3.01"
+      y2="6"
+    ></line>
+
+    <line
+      x1="3"
+      y1="12"
+      x2="3.01"
+      y2="12"
+    ></line>
+
+    <line
+      x1="3"
+      y1="18"
+      x2="3.01"
+      y2="18"
+    ></line>
+  </symbol>
+</svg>
+
+<header class="top-navbar">
+  <a href="./index.html" class="navbar-brand">
+    RDoc Documentation
+  </a>
+
+  <div class="navbar-search" data-search-container>
+    <button id="search-toggle" class="navbar-search-mobile" aria-label="Open search"
+            aria-controls="search-surface" aria-expanded="false" type="button">
+      <span aria-hidden="true">🔍</span>
+    </button>
+
+    <div class="search-backdrop" data-search-close></div>
+    <div id="search-surface" class="search-surface">
+      <form class="search-form" role="search" action="#" method="get" accept-charset="utf-8">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input id="search-field" role="combobox" aria-label="Search"
+               aria-autocomplete="list" aria-controls="search-results"
+               type="text" name="search" placeholder="Search (/) for a class, method..."
+               spellcheck="false" autocomplete="off"
+               title="Type to search, Up and Down to navigate, Enter to load">
+        <button type="button" class="search-close" aria-label="Close search" data-search-close>
+          <span aria-hidden="true">esc</span>
+        </button>
+      </form>
+
+      <div class="search-body">
+        <ul id="search-results" aria-label="Search Results"
+            aria-busy="false" aria-expanded="false"
+            aria-atomic="false" class="initially-hidden search-results"></ul>
+        <div class="search-empty">
+          <p>No recent searches</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme toggle button -->
+  <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" type="button">
+    <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+  </button>
+</header>
+
+<div id="sidebar-navigation-toggle" role="button" tabindex="0" aria-label="Toggle sidebar" aria-expanded="false" aria-controls="sidebar-navigation">
+  <span aria-hidden="true">&#9776;</span>
+</div>
+
+
+<nav id="sidebar-navigation" role="navigation" hidden>
+  
+
+
+
+
+
+
+  <div id="fileindex-section" class="nav-section">
+    <details class="nav-section-collapsible" open>
+      <summary class="nav-section-header">
+        <span class="nav-section-icon">
+          <svg>
+            <use href="#icon-file"></use>
+          </svg>
+        </span>
+
+        <span class="nav-section-title">Pages</span>
+
+        <span class="nav-section-chevron">
+          <svg>
+            <use href="#icon-chevron"></use>
+          </svg>
+        </span>
+      </summary>
+
+      <ul class="nav-list">
+
+
+
+
+
+
+            <li>
+              <a href="./CHANGELOG_md.html">
+                CHANGELOG
+              </a>
+            </li>
+
+      </ul>
+    </details>
+  </div>
+
+
+  <div id="classindex-section" class="nav-section">
+  <details class="nav-section-collapsible" open>
+    <summary class="nav-section-header">
+      <span class="nav-section-icon">
+        <svg><use href="#icon-layers"></use></svg>
+      </span>
+      <span class="nav-section-title">Classes and Modules</span>
+      <span class="nav-section-chevron">
+        <svg><use href="#icon-chevron"></use></svg>
+      </span>
+    </summary>
+
+    <ul class="link-list nav-list"><li><code><a href="./Phonemizer.html">Phonemizer</a></code></li></ul>
+  </details>
+</div>
+
+</nav>
+
+<main role="main">
+
+  
+<span id="label-phonemizer" class="legacy-anchor"></span>
+<h1 id="phonemizer"><a href="#phonemizer">phonemizer</a></h1>
+
+<p><a href="https://rubygems.org/gems/phonemizer"><img src="https://img.shields.io/gem/v/phonemizer.svg" alt="Gem Version"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a></p>
+
+<p>A minimal Ruby wrapper around <a href="https://github.com/espeak-ng/espeak-ng">espeak-ng</a> for simple word-to-IPA phonemization, with caching and parallelism. Supports <a href="https://github.com/espeak-ng/espeak-ng/blob/master/docs/languages.md">these languages</a>.</p>
+
+<blockquote>
+<p><strong>Phonemizing a large batch?</strong> Each word here costs one fork+exec of the <code>espeak-ng</code> CLI. For big lexicons, see <a href="https://rubygems.org/gems/phonemizer_ffi"><code>phonemizer_ffi</code></a> — a drop-in replacement with the same <a href="Phonemizer.html#method-i-phonemize"><code>Phonemizer.phonemize</code></a> API that calls <code>libespeak-ng</code> in-process via FFI instead (no process spawned per word), typically ~40x faster on batches, with the same output.</p>
+</blockquote>
+
+<span id="label-Requirements" class="legacy-anchor"></span>
+<h2 id="requirements"><a href="#requirements">Requirements</a></h2>
+<ul><li>
+<p>Ruby 3.1+</p>
+</li><li>
+<p><strong>espeak-ng</strong> command-line tool must be installed: <code>bash  apt install espeak-ng     # Debian/Ubuntu  brew install espeak-ng    # macOS  </code></p>
+</li></ul>
+
+<span id="label-Installation" class="legacy-anchor"></span>
+<h2 id="installation"><a href="#installation">Installation</a></h2>
+
+<p>Add to your Gemfile:</p>
+
+<pre class="ruby"><span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;</span><span class="ruby-string">phonemizer</span><span class="ruby-string">&quot;</span>
+</pre>
+
+<p>Or install directly:</p>
+
+<pre class="bash">gem install phonemizer</pre>
+
+<span id="label-Usage" class="legacy-anchor"></span>
+<h2 id="usage"><a href="#usage">Usage</a></h2>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;</span><span class="ruby-string">phonemizer</span><span class="ruby-string">&quot;</span>
+
+<span class="ruby-comment"># Single word</span>
+<span class="ruby-constant">Phonemizer</span>.<span class="ruby-identifier">phonemize</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">manger</span><span class="ruby-string">&quot;</span>, <span class="ruby-value">language</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">fr-fr</span><span class="ruby-string">&quot;</span>)
+<span class="ruby-comment"># =&gt; &quot;mɑ̃ʒe&quot;</span>
+
+<span class="ruby-comment"># Batch - pass an Array, get an Array back (same order)</span>
+<span class="ruby-constant">Phonemizer</span>.<span class="ruby-identifier">phonemize</span>([<span class="ruby-string">&quot;</span><span class="ruby-string">docteur</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">tableau</span><span class="ruby-string">&quot;</span>, <span class="ruby-string">&quot;</span><span class="ruby-string">pastille</span><span class="ruby-string">&quot;</span>], <span class="ruby-value">language</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">fr-fr</span><span class="ruby-string">&quot;</span>)
+<span class="ruby-comment"># =&gt; [&quot;dɔktœʁ&quot;, &quot;tablo&quot;, &quot;pastij&quot;]</span>
+</pre>
+
+<span id="label-Options" class="legacy-anchor"></span>
+<h2 id="options"><a href="#options">Options</a></h2>
+
+<pre class="ruby"><span class="ruby-constant">Phonemizer</span>.<span class="ruby-identifier">phonemize</span>(
+  <span class="ruby-string">&quot;</span><span class="ruby-string">les amis</span><span class="ruby-string">&quot;</span>,
+  <span class="ruby-value">language</span><span class="ruby-value">:</span>        <span class="ruby-string">&quot;</span><span class="ruby-string">fr-fr</span><span class="ruby-string">&quot;</span>,    <span class="ruby-comment"># espeak voice (default &quot;en-us&quot;)</span>
+  <span class="ruby-value">phone_sep</span><span class="ruby-value">:</span>       <span class="ruby-string">&quot;</span><span class="ruby-string">&quot;</span>,         <span class="ruby-comment"># separator between phones (&quot;&quot; = contiguous)</span>
+  <span class="ruby-value">word_sep</span><span class="ruby-value">:</span>        <span class="ruby-string">&quot;</span><span class="ruby-string"> </span><span class="ruby-string">&quot;</span>,        <span class="ruby-comment"># separator between words in one utterance</span>
+  <span class="ruby-value">strip_stress</span><span class="ruby-value">:</span>    <span class="ruby-keyword">true</span>,       <span class="ruby-comment"># remove stress marks and liaison hyphens</span>
+  <span class="ruby-value">language_switch</span><span class="ruby-value">:</span> <span class="ruby-value">:</span><span class="ruby-value">remove</span>,    <span class="ruby-comment"># :remove or :keep, for inline (fr)/(en) tags</span>
+  <span class="ruby-value">workers</span><span class="ruby-value">:</span>         <span class="ruby-constant">DEFAULT_WORKERS</span>  <span class="ruby-comment"># parallel espeak-ng calls (default: CPUs - 1)</span>
+)
+</pre>
+
+<p>Separate each phone explicitly:</p>
+
+<pre class="ruby"><span class="ruby-constant">Phonemizer</span>.<span class="ruby-identifier">phonemize</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">tableau</span><span class="ruby-string">&quot;</span>, <span class="ruby-value">language</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">fr-fr</span><span class="ruby-string">&quot;</span>, <span class="ruby-value">phone_sep</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string"> </span><span class="ruby-string">&quot;</span>)
+<span class="ruby-comment"># =&gt; &quot;t a b l o&quot;</span>
+</pre>
+
+<p>Keep the language-switch markers espeak emits mid-utterance:</p>
+
+<pre class="ruby"><span class="ruby-constant">Phonemizer</span>.<span class="ruby-identifier">phonemize</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">le célèbre Schwarzenegger</span><span class="ruby-string">&quot;</span>, <span class="ruby-value">language</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">fr-fr</span><span class="ruby-string">&quot;</span>, <span class="ruby-value">language_switch</span><span class="ruby-value">:</span> <span class="ruby-value">:</span><span class="ruby-value">keep</span>)
+<span class="ruby-string">&quot;</span><span class="ruby-string">lə selɛbʁ (en)ʃwɔːzənɛɡə(fr)</span><span class="ruby-string">&quot;</span>
+</pre>
+
+<span id="label-Command+line" class="legacy-anchor"></span>
+<h2 id="command-line"><a href="#command-line">Command line</a></h2>
+
+<p>The <code>phonemize</code> executable exposes the same options as flags. Pass text as arguments, or a file path to phonemize it line by line:</p>
+
+<pre class="bash">phonemize &quot;hello world&quot;
+phonemize -l fr-fr &quot;les amis&quot;
+phonemize -l fr-fr words.txt &gt; words.ipa</pre>
+
+<pre class="bash">phonemize --help
+# Usage: phonemize [options] [text | file]
+#     -l, --language LANG           espeak voice (default: en-us)
+#     -p, --phone-sep SEP           separator between phones (default: none)
+#     -w, --word-sep SEP            separator between words (default: space)
+#     -s, --[no-]strip-stress       strip stress marks and liaison hyphens (default: yes)
+#     -k, --keep-language-switch    keep inline (en)/(fr) language tags (default: remove)
+#     -j, --workers N               parallel espeak-ng calls (default: CPUs - 1)
+#     -h, --help                    show this help</pre>
+
+<pre class="bash">phonemize -l fr-fr -p &quot; &quot; tableau
+# =&gt; t a b l o</pre>
+
+<span id="label-Punctuation" class="legacy-anchor"></span>
+<h2 id="punctuation"><a href="#punctuation">Punctuation</a></h2>
+
+<p>Punctuation is preserved verbatim and never sent to espeak, so whole sentences pass through cleanly:</p>
+
+<pre class="ruby"><span class="ruby-constant">Phonemizer</span>.<span class="ruby-identifier">phonemize</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">Bonjour, comment ça va ?</span><span class="ruby-string">&quot;</span>, <span class="ruby-value">language</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">fr-fr</span><span class="ruby-string">&quot;</span>)
+<span class="ruby-comment"># =&gt; &quot;bɔ̃ʒuʁ,kɔmɑ̃ sa va?&quot;</span>
+</pre>
+
+<p>Apostrophes are kept inside the word on purpose, so elisions stay intact and liaison consonants aren’t lost:</p>
+
+<pre class="ruby"><span class="ruby-constant">Phonemizer</span>.<span class="ruby-identifier">phonemize</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">aujourd&#39;hui</span><span class="ruby-string">&quot;</span>, <span class="ruby-value">language</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">fr-fr</span><span class="ruby-string">&quot;</span>)
+<span class="ruby-comment"># =&gt; &quot;oʒuʁdyi&quot;</span>
+</pre>
+
+<span id="label-Caching" class="legacy-anchor"></span>
+<h2 id="caching"><a href="#caching">Caching</a></h2>
+
+<p>Results are cached per <code>(word, language, options)</code>. Useful when the same forms recur across a large lexicon. Call <code>clear_cache</code> to free memory or start fresh:</p>
+
+<pre class="ruby"><span class="ruby-constant">Phonemizer</span>.<span class="ruby-identifier">clear_cache</span>
+</pre>
+
+<span id="label-Thread+Safety" class="legacy-anchor"></span>
+<h2 id="thread-safety"><a href="#thread-safety">Thread Safety</a></h2>
+
+<p>This gem is <strong>not thread-safe</strong>. The internal cache uses a plain Hash without synchronization. If you call <code>phonemize</code> from multiple threads:</p>
+<ul><li>
+<p>Duplicate espeak-ng calls may occur for the same word</p>
+</li><li>
+<p>Cache reads may see stale state</p>
+</li></ul>
+
+<p><strong>Workaround:</strong> Wrap your calls in your own <code>Mutex</code>:</p>
+
+<pre class="ruby"><span class="ruby-ivar">@mutex</span> = <span class="ruby-constant">Mutex</span>.<span class="ruby-identifier">new</span>
+<span class="ruby-ivar">@mutex</span>.<span class="ruby-identifier">synchronize</span> { <span class="ruby-constant">Phonemizer</span>.<span class="ruby-identifier">phonemize</span>(<span class="ruby-identifier">words</span>, <span class="ruby-value">language</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">fr-fr</span><span class="ruby-string">&quot;</span>) }
+</pre>
+
+<span id="label-API+Reference" class="legacy-anchor"></span>
+<h2 id="api-reference"><a href="#api-reference">API Reference</a></h2>
+
+<span id="label-Phonemizer.phonemize-28words-2C+-2A-2Aoptions-29" class="legacy-anchor"></span>
+<h3 id="phonemizerphonemizewords-options"><a href="#phonemizerphonemizewords-options"><a href="Phonemizer.html#method-i-phonemize"><code>Phonemizer.phonemize(words, **options)</code></a></a></h3>
+
+<p>Phonemize text to IPA. Returns a String for String input, Array for Array input.</p>
+
+<p><strong>Arguments:</strong> - <code>words</code> — String or Array of Strings - <code>language</code> — espeak voice (default: <code>&quot;en-us&quot;</code>) - <code>phone_sep</code> — separator between phones (default: <code>&quot;&quot;</code>) - <code>word_sep</code> — separator between words in multi-word input (default: <code>&quot; &quot;</code>) - <code>strip_stress</code> — remove stress marks ˈ ˌ and liaison hyphens (default: <code>true</code>) - <code>language_switch</code> — <code>:remove</code> or <code>:keep</code> for inline language tags (default: <code>:remove</code>) - <code>workers</code> — max parallel espeak-ng calls (default: <a href="Phonemizer.html#DEFAULT_WORKERS"><code>Phonemizer::DEFAULT_WORKERS</code></a>, CPU count - 1, min 1)</p>
+
+<span id="label-Phonemizer.espeak_raw-28text-2C+language-2C+phone_sep-3A+nil-29" class="legacy-anchor"></span>
+<h3 id="phonemizerespeakrawtext-language-phonesep-nil"><a href="#phonemizerespeakrawtext-language-phonesep-nil"><code>Phonemizer.espeak_raw(text, language, phone_sep: nil)</code></a></h3>
+
+<p>Low-level: call espeak-ng directly. Returns raw IPA output string.</p>
+
+<p><strong>Arguments:</strong> - <code>text</code> — text to phonemize - <code>language</code> — espeak voice - <code>phone_sep</code> — optional separator (passed as <code>--sep</code> to espeak-ng)</p>
+
+<span id="label-Phonemizer.clear_cache" class="legacy-anchor"></span>
+<h3 id="phonemizerclearcache"><a href="#phonemizerclearcache"><a href="Phonemizer.html#method-i-clear_cache"><code>Phonemizer.clear_cache</code></a></a></h3>
+
+<p>Clear the internal phonemization cache. Returns the new empty cache Hash.</p>
+
+<span id="label-Reading+from+a+File" class="legacy-anchor"></span>
+<h2 id="reading-from-a-file"><a href="#reading-from-a-file">Reading from a File</a></h2>
+
+<p>On the command line, just pass a file path — the executable phonemizes it line by line (see <a href="#command-line">Command line</a>):</p>
+
+<pre class="bash">phonemize -l fr-fr words.txt &gt; words.ipa</pre>
+
+<p>In Ruby, <code>phonemize</code> accepts any Array of Strings and returns an Array in the same order, so a wordlist is a one-liner when you want the result in memory:</p>
+
+<pre class="ruby"><span class="ruby-identifier">lines</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">readlines</span>(<span class="ruby-string">&quot;</span><span class="ruby-string">words.txt</span><span class="ruby-string">&quot;</span>, <span class="ruby-value">chomp</span><span class="ruby-value">:</span> <span class="ruby-keyword">true</span>).<span class="ruby-identifier">reject</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:</span><span class="ruby-value">empty?</span>)
+<span class="ruby-identifier">ipa</span> = <span class="ruby-constant">Phonemizer</span>.<span class="ruby-identifier">phonemize</span>(<span class="ruby-identifier">lines</span>, <span class="ruby-value">language</span><span class="ruby-value">:</span> <span class="ruby-string">&quot;</span><span class="ruby-string">fr-fr</span><span class="ruby-string">&quot;</span>) <span class="ruby-comment"># Array of IPA strings, same order</span>
+</pre>
+
+<span id="label-Contributing" class="legacy-anchor"></span>
+<h2 id="contributing"><a href="#contributing">Contributing</a></h2>
+
+<p>Bug reports and pull requests are welcome on <a href="https://github.com/anantone/ruby-phonemizer">GitHub</a>.</p>
+
+<span id="label-License" class="legacy-anchor"></span>
+<h2 id="license"><a href="#license">License</a></h2>
+
+<p>MIT</p>
+
+
+</main>
+
+<aside id="table-of-contents" class="table-of-contents" role="complementary" aria-label="Table of Contents">
+  <div class="toc-sticky">
+    <h3 class="toc-heading">On This Page</h3>
+    <nav class="toc-nav" id="toc-nav" aria-label="Page sections">
+      <!-- Generated by JavaScript based on page headings -->
+    </nav>
+  </div>
+</aside>
+
+
+<footer class="site-footer">
+  
+
+  <div class="footer-bottom">
+    <p>
+      Generated by <a href="https://ruby.github.io/rdoc/">RDoc 8.1.0</a>
+      using the Aliki theme by <a href="http://st0012.dev">Stan Lo</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+
