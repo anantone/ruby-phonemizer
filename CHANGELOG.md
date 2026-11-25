@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.2 - 2026-11-24
+
+- rubocop : `.rubocop.yml` ajouté (TargetRubyVersion 3.1, NewCops désactivés, quotes simples, plafonds Metrics relevés à l'état actuel, BlockLength hors spec/) ; autocorrections appliquées ; 0 offense, specs inchangés
+
 ## 0.5.1 - 2026-11-24
 
 - RDoc: document the remaining public methods (`clear_cache`, `phonemize_batch` with `@param`/`@return`); add an `rdoc` task to the Rakefile (`rake rdoc` generates the HTML docs, README as home page) and `rdoc` as a development dependency

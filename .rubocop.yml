@@ -1,0 +1,33 @@
+AllCops:
+  TargetRubyVersion: 3.1
+  NewCops: disable
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+# Choix documentés pour ce codebase (prosodie française, moteur de règles) :
+Style/FormatStringToken:
+  EnforcedStyle: template # format('%3d  %s', ...) positionnels au CLI
+
+Naming/AsciiIdentifiers:
+  Enabled: false # « h aspiré » : H_ASPIRÉ, h_aspiré? (terme technique français)
+
+Naming/MethodParameterName:
+  AllowedNames: [a, ch, i, n] # index / lettre / nombre : params courts idiomatiques
+
+Style/OptionalBooleanParameter:
+  Enabled: false # API volontaire : dierese: false/true/:auto, drapeau interne big:
+
+Metrics/BlockLength:
+  Exclude: ['spec/**/*']
+  Max: 130
+Metrics/MethodLength:
+  Max: 20
+Metrics/AbcSize:
+  Max: 35
+Metrics/CyclomaticComplexity:
+  Max: 12
+Metrics/PerceivedComplexity:
+  Max: 12
+Metrics/ParameterLists:
+  Max: 8

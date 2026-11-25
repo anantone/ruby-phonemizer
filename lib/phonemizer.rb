@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "phonemizer/version"
-require "open3"
-require "etc"
+require_relative 'phonemizer/version'
+require 'open3'
+require 'etc'
 
 # A minimal wrap of espeak-ng for simple uses (calls espeak CLI directly).
 #
@@ -20,7 +20,7 @@ require "etc"
 module Phonemizer
   module_function
 
-  DEFAULT_LANGUAGE = "en-us"
+  DEFAULT_LANGUAGE = 'en-us'
   DEFAULT_WORKERS  = [Etc.nprocessors - 1, 1].max
 
   # espeak emits parenthesized language tags on language switches, e.g.
@@ -47,15 +47,15 @@ module Phonemizer
   #   strip_stress:    remove ˈ ˌ from output,     default true
   #   language_switch: :remove (default) or :keep
   #   workers:         espeak-ng calls in flight, default DEFAULT_WORKERS
-  def phonemize(words, language: DEFAULT_LANGUAGE, phone_sep: "",
-                word_sep: " ", strip_stress: true, language_switch: :remove,
+  def phonemize(words, language: DEFAULT_LANGUAGE, phone_sep: '',
+                word_sep: ' ', strip_stress: true, language_switch: :remove,
                 workers: DEFAULT_WORKERS)
     if words.is_a?(Array)
       phonemize_batch(words, language:, phone_sep:, word_sep:,
-                      strip_stress:, language_switch:, workers:)
+                             strip_stress:, language_switch:, workers:)
     else
       phonemize_batch([words], language:, phone_sep:, word_sep:,
-                      strip_stress:, language_switch:, workers:).first
+                               strip_stress:, language_switch:, workers:).first
     end
   end
 
@@ -70,15 +70,15 @@ module Phonemizer
   # One espeak-ng call. Returns the raw output string (may span several
   # words or lines; the caller interprets it).
   def espeak_raw(text, language, phone_sep: nil)
-    args = ["espeak-ng", "-q", "--ipa", "-v", language]
+    args = ['espeak-ng', '-q', '--ipa', '-v', language]
     # --sep only when explicitly requested: some espeak-ng builds reject it,
     # and the default contiguous IPA output needs no separator anyway.
     args << "--sep=#{phone_sep}" unless phone_sep.to_s.empty?
-    args << "--stdin"
+    args << '--stdin'
 
     # NB: text + "\n", not text << "\n" — << would mutate the caller's
     # string, and pieces are hash keys in transcribe_all's ipa_map
-    out, err, status = Open3.capture3(*args, stdin_data: text + "\n")
+    out, err, status = Open3.capture3(*args, stdin_data: "#{text}\n")
 
     raise "espeak-ng failed (#{status.exitstatus}): #{err.strip}" unless status.success?
 
@@ -138,7 +138,7 @@ module Phonemizer
     queue = Queue.new
     workers = [workers, pieces.size].min
     pieces.each { |p| queue << p }
-    workers.times { queue << nil }        # poison pills: one per worker
+    workers.times { queue << nil } # poison pills: one per worker
 
     results = Array.new(workers) { {} }
     threads = Array.new(workers) do |i|
@@ -163,27 +163,28 @@ module Phonemizer
   def stitch(parts, ipa_map, phone_sep:, word_sep:, strip_stress:,
              language_switch:)
     parts.map do |part|
-      next part if PUNCT.match?(part)               # punctuation: verbatim
-      t = ipa_map[part] || ""
-      t = t.gsub(LANG_SWITCH, "") if language_switch == :remove
+      next part if PUNCT.match?(part) # punctuation: verbatim
+
+      t = ipa_map[part] || ''
+      t = t.gsub(LANG_SWITCH, '') if language_switch == :remove
       # Strip stress marks always; strip the liaison hyphen only in contiguous
       # mode, where espeak emits it (e.g. "les amis" -> "le-z ami"). In --sep
       # mode a "-" is a user-chosen phone separator, never a liaison marker,
       # so it must survive.
       if strip_stress
-        t = t.delete("ˈˌ")
-        t = t.delete("-") if phone_sep.empty?
+        t = t.delete('ˈˌ')
+        t = t.delete('-') if phone_sep.empty?
       end
-      if phone_sep.empty?
-        # contiguous phones: a plain space is a word boundary
-        t = t.gsub(" ", word_sep)
-      else
-        # --sep was requested: single spaces are phone separators, double
-        # spaces are word boundaries. Protect the boundaries first, otherwise
-        # the single-space substitution consumes one half of every double
-        # space and the word boundary is lost.
-        t = t.gsub("  ", "\x00").gsub(" ", phone_sep).gsub("\x00", word_sep)
-      end
+      t = if phone_sep.empty?
+            # contiguous phones: a plain space is a word boundary
+            t.gsub(' ', word_sep)
+          else
+            # --sep was requested: single spaces are phone separators, double
+            # spaces are word boundaries. Protect the boundaries first, otherwise
+            # the single-space substitution consumes one half of every double
+            # space and the word boundary is lost.
+            t.gsub('  ', "\x00").gsub(' ', phone_sep).gsub("\x00", word_sep)
+          end
       t
     end.join
   end
