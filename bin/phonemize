@@ -1,6 +1,5 @@
-# frozen_string_literal: true
-
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'optparse'
 require 'phonemizer'
@@ -15,7 +14,7 @@ options = {
 }
 
 parser = OptionParser.new do |o|
-  o.banner = 'Usage: phonemize [options] [text | file]'
+  o.banner = 'Usage: phonemize [options] [text | file]   (no argument: read lines from stdin)'
   o.on('-l', '--language LANG',
        "espeak voice (default: #{Phonemizer::DEFAULT_LANGUAGE})") { |v| options[:language] = v }
   o.on('-p', '--phone-sep SEP',
@@ -33,12 +32,32 @@ parser = OptionParser.new do |o|
     exit
   end
 end
-parser.parse!(ARGV)
+begin
+  parser.parse!(ARGV)
+rescue OptionParser::ParseError => e
+  warn "phonemize: #{e.message}"
+  warn parser
+  exit 1
+end
 
-text = ARGV.join(' ')
-if File.file?(text)
-  lines = File.readlines(text, chomp: true).reject(&:empty?)
+def phonemize_lines(lines, options)
+  lines = lines.map(&:chomp).reject(&:empty?)
   Phonemizer.phonemize(lines, **options).each { |line| puts line }
-else
-  puts Phonemizer.phonemize(text, **options)
+end
+
+begin
+  if ARGV.empty?
+    if $stdin.tty?
+      warn parser
+      exit 1
+    end
+    phonemize_lines($stdin.each_line.to_a, options)
+  elsif ARGV.size == 1 && File.file?(ARGV[0])
+    phonemize_lines(File.readlines(ARGV[0]), options)
+  else
+    puts Phonemizer.phonemize(ARGV.join(' '), **options)
+  end
+rescue Phonemizer::Error, ArgumentError => e
+  warn "phonemize: #{e.message}"
+  exit 1
 end

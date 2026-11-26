@@ -81,7 +81,7 @@ RSpec.describe Phonemizer do
       m = { 'wifi' => 'vi (fr) fi' }
       result = described_class.stitch(parts, m, phone_sep: '', word_sep: ' ',
                                                 strip_stress: true, language_switch: :remove)
-      expect(result).to eq('vi  fi')
+      expect(result).to eq('vi fi') # no doubled separator where the tag was
     end
 
     it 'keeps language-switch tags when :keep' do
@@ -118,6 +118,42 @@ RSpec.describe Phonemizer do
       expect(result).to eq('le _ ami')
     end
 
+    it 'restores whitespace next to punctuation as word_sep' do
+      parts = ['bonjour', ',', ' comment']
+      m = { 'bonjour' => 'bɔ̃ʒuʁ', 'comment' => 'kɔmɑ̃' }
+      result = described_class.stitch(parts, m, phone_sep: '', word_sep: '_',
+                                                strip_stress: true, language_switch: :remove)
+      expect(result).to eq('bɔ̃ʒuʁ,_kɔmɑ̃')
+    end
+
+    it 'turns whitespace-only parts between punctuation into word_sep' do
+      result = described_class.stitch([',', ' ', '.'], {}, phone_sep: '', word_sep: ' ',
+                                                           strip_stress: true, language_switch: :remove)
+      expect(result).to eq(', .')
+    end
+
+    it 'strips the liaison hyphen in separator mode and keeps a user "-" separator' do
+      # bare --sep output: phones split by one space, words by two
+      m = { 'les amis' => 'l e- z  a m ˈi' }
+      result = described_class.stitch(['les amis'], m, phone_sep: '-', word_sep: ' ',
+                                                       strip_stress: true, language_switch: :remove)
+      expect(result).to eq('l-e-z a-m-i')
+    end
+
+    it 'drops a removed language tag without leaving empty phones (separator mode)' do
+      m = { 'le wifi' => 'l ə-  (en) w ˈaɪ f aɪ (fr)' }
+      result = described_class.stitch(['le wifi'], m, phone_sep: '|', word_sep: ' ',
+                                                      strip_stress: true, language_switch: :remove)
+      expect(result).to eq('l|ə w|aɪ|f|aɪ')
+    end
+
+    it 'supports multi-character phone separators' do
+      m = { 'ami' => 'a m ˈi' }
+      result = described_class.stitch(['ami'], m, phone_sep: ' . ', word_sep: ' ',
+                                                  strip_stress: true, language_switch: :remove)
+      expect(result).to eq('a . m . i')
+    end
+
     it 'uses phone_sep for single spaces and word_sep for double spaces' do
       parts = ['les amis']
       m = { 'les amis' => 'l e  a m i' }
@@ -149,6 +185,21 @@ RSpec.describe Phonemizer do
     it 'returns an Array for Array input' do
       result = described_class.phonemize(['manger'])
       expect(result).to be_an(Array)
+    end
+  end
+
+  describe 'workers validation' do
+    it 'rejects zero or negative workers instead of returning empty output' do
+      expect { described_class.phonemize('x', workers: 0) }.to raise_error(ArgumentError)
+      expect { described_class.phonemize('x', workers: -1) }.to raise_error(ArgumentError)
+    end
+  end
+
+  describe '.espeak_raw without espeak-ng' do
+    it 'raises Phonemizer::Error with an install hint' do
+      allow(Open3).to receive(:capture3).and_raise(Errno::ENOENT)
+      expect { described_class.espeak_raw('x', 'en-us') }
+        .to raise_error(Phonemizer::Error, /espeak-ng not found/)
     end
   end
 

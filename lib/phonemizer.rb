@@ -33,6 +33,10 @@ module Phonemizer
   # halves separately and drops liaison consonants (oʒuʁdɥi -> oʒuʁ + yi).
   PUNCT = /([[:punct:]&&[^'’‘]]+)/
 
+  # Raised when espeak-ng is missing or fails. Subclasses RuntimeError so
+  # existing `rescue RuntimeError` callers keep working.
+  class Error < RuntimeError; end
+
   @cache = {}
 
   # ---------------------------------------------------------------- public API
@@ -69,18 +73,28 @@ module Phonemizer
 
   # One espeak-ng call. Returns the raw output string (may span several
   # words or lines; the caller interprets it).
+  #
+  # With a non-empty +phone_sep+, espeak-ng is called with a bare --sep:
+  # phones come back separated by single spaces and words by double spaces.
+  # The requested separator itself is never handed to espeak-ng (it would
+  # replace the phone spaces but leave single-space word boundaries, making
+  # the two indistinguishable); #stitch inserts it instead, which also allows
+  # multi-character separators.
   def espeak_raw(text, language, phone_sep: nil)
     args = ['espeak-ng', '-q', '--ipa', '-v', language]
-    # --sep only when explicitly requested: some espeak-ng builds reject it,
-    # and the default contiguous IPA output needs no separator anyway.
-    args << "--sep=#{phone_sep}" unless phone_sep.to_s.empty?
+    args << '--sep' unless phone_sep.to_s.empty?
     args << '--stdin'
 
     # NB: text + "\n", not text << "\n" — << would mutate the caller's
     # string, and pieces are hash keys in transcribe_all's ipa_map
-    out, err, status = Open3.capture3(*args, stdin_data: "#{text}\n")
+    out, err, status = begin
+      Open3.capture3(*args, stdin_data: "#{text}\n")
+    rescue Errno::ENOENT
+      raise Error, 'espeak-ng not found on PATH ' \
+                   '(apt install espeak-ng / brew install espeak-ng)'
+    end
 
-    raise "espeak-ng failed (#{status.exitstatus}): #{err.strip}" unless status.success?
+    raise Error, "espeak-ng failed (#{status.exitstatus}): #{err.strip}" unless status.success?
 
     warn "WARNING: espeak-ng returned no output for: #{text[0, 40].inspect}" \
       if out.strip.empty? && !text.strip.empty?
@@ -104,6 +118,7 @@ module Phonemizer
   # @return [Array<String>] one phonemization per input word, in order
   def phonemize_batch(words, language:, phone_sep:, word_sep:,
                       strip_stress:, language_switch:, workers: DEFAULT_WORKERS)
+    check_workers!(workers)
     # Guard for nil: only copy when some element isn't already a String
     words = words.map(&:to_s) unless words.all? { |w| w.is_a?(String) }
     # Cache: word forms repeat constantly across a lexicon. Options are
@@ -119,7 +134,10 @@ module Phonemizer
       # only the clean chunks, splice punctuation back by position
       chunks = todo.map { |w| split_punctuation(w) }
 
-      clean_words = chunks.flatten.reject { |p| PUNCT.match?(p) }.uniq
+      # Pieces are sent stripped: the whitespace around a piece (e.g. the
+      # space in "hello, world") is restored as word_sep by #stitch.
+      clean_words = chunks.flatten.reject { |p| PUNCT.match?(p) }
+                          .map(&:strip).reject(&:empty?).uniq
       ipa_map = transcribe_all(clean_words, language, phone_sep, workers:)
 
       todo.each_with_index do |w, i|
@@ -130,6 +148,12 @@ module Phonemizer
     end
 
     words.map { |w| @cache[key_of[w]] }
+  end
+
+  def check_workers!(workers)
+    return if workers.is_a?(Integer) && workers.positive?
+
+    raise ArgumentError, "workers must be a positive Integer (got #{workers.inspect})"
   end
 
   # One espeak-ng call per piece (per-line isolation), drained by a
@@ -159,33 +183,44 @@ module Phonemizer
   end
 
   # Reassemble one utterance: punctuation back in place, separators applied.
-  # ipa_map maps each chunk piece to its raw IPA (looked up by content).
+  # ipa_map maps each (stripped) chunk piece to its raw IPA. Whitespace
+  # around a piece — a word boundary next to punctuation — becomes word_sep.
   def stitch(parts, ipa_map, phone_sep:, word_sep:, strip_stress:,
              language_switch:)
     parts.map do |part|
       next part if PUNCT.match?(part) # punctuation: verbatim
 
-      t = ipa_map[part] || ''
-      t = t.gsub(LANG_SWITCH, '') if language_switch == :remove
-      # Strip stress marks always; strip the liaison hyphen only in contiguous
-      # mode, where espeak emits it (e.g. "les amis" -> "le-z ami"). In --sep
-      # mode a "-" is a user-chosen phone separator, never a liaison marker,
-      # so it must survive.
-      if strip_stress
-        t = t.delete('ˈˌ')
-        t = t.delete('-') if phone_sep.empty?
-      end
-      t = if phone_sep.empty?
-            # contiguous phones: a plain space is a word boundary
-            t.gsub(' ', word_sep)
-          else
-            # --sep was requested: single spaces are phone separators, double
-            # spaces are word boundaries. Protect the boundaries first, otherwise
-            # the single-space substitution consumes one half of every double
-            # space and the word boundary is lost.
-            t.gsub('  ', "\x00").gsub(' ', phone_sep).gsub("\x00", word_sep)
-          end
-      t
+      core = part.strip
+      next word_sep if core.empty? # whitespace between two punctuation runs
+
+      lead  = part.match?(/\A\s/) ? word_sep : ''
+      trail = part.match?(/\s\z/) ? word_sep : ''
+      lead + format_ipa(ipa_map[core] || '', phone_sep:, word_sep:,
+                                             strip_stress:, language_switch:) + trail
     end.join
+  end
+
+  # Raw espeak-ng output for one piece -> final string.
+  #
+  # Contiguous mode (phone_sep ""): words are separated by whitespace.
+  # Separator mode: espeak-ng was called with a bare --sep, so phones are
+  # separated by one space and words by two or more (see #espeak_raw).
+  # Working on tokens rather than substituting characters keeps a removed
+  # tag or stress mark from leaving an empty phone or a spurious boundary.
+  # With strip_stress, the "-" espeak-ng emits as a liaison marker (e.g.
+  # "les amis" -> "le-z ami") is dropped in both modes: a user-chosen "-"
+  # phone separator is only inserted afterwards, so it always survives.
+  def format_ipa(raw, phone_sep:, word_sep:, strip_stress:, language_switch:)
+    raw = raw.gsub(LANG_SWITCH, '') if language_switch == :remove
+    clean = ->(tok) { strip_stress ? tok.delete('ˈˌ-') : tok }
+
+    if phone_sep.empty?
+      raw.split.map(&clean).reject(&:empty?).join(word_sep)
+    else
+      raw.strip.split(/\s{2,}|\n/).filter_map do |word|
+        phones = word.split.map(&clean).reject(&:empty?)
+        phones.join(phone_sep) unless phones.empty?
+      end.join(word_sep)
+    end
   end
 end

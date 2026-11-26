@@ -86,17 +86,18 @@ Phonemizer.phonemize("le célèbre Schwarzenegger", language: "fr-fr", language_
 Command line
 ----------------------------------------------------------------
 
-The `phonemize` executable exposes the same options as flags. Pass text as arguments, or a file path to phonemize it line by line:
+The `phonemize` executable exposes the same options as flags. Pass text as arguments, a file path to phonemize it line by line, or pipe lines on stdin:
 
 ```bash
 phonemize "hello world"
 phonemize -l fr-fr "les amis"
 phonemize -l fr-fr words.txt > words.ipa
+cat words.txt | phonemize -l fr-fr
 ```
 
 ```bash
 phonemize --help
-# Usage: phonemize [options] [text | file]
+# Usage: phonemize [options] [text | file]   (no argument: read lines from stdin)
 #     -l, --language LANG           espeak voice (default: en-us)
 #     -p, --phone-sep SEP           separator between phones (default: none)
 #     -w, --word-sep SEP            separator between words (default: space)
@@ -170,7 +171,7 @@ Phonemize text to IPA. Returns a String for String input, Array for Array input.
 - `word_sep` — separator between words in multi-word input (default: `" "`)
 - `strip_stress` — remove stress marks ˈ ˌ and liaison hyphens (default: `true`)
 - `language_switch` — `:remove` or `:keep` for inline language tags (default: `:remove`)
-- `workers` — max parallel espeak-ng calls (default: `Phonemizer::DEFAULT_WORKERS`, CPU count - 1, min 1)
+- `workers` — max parallel espeak-ng calls, a positive Integer (default: `Phonemizer::DEFAULT_WORKERS`, CPU count - 1, min 1); `ArgumentError` otherwise
 
 ### `Phonemizer.espeak_raw(text, language, phone_sep: nil)`
 
@@ -179,7 +180,9 @@ Low-level: call espeak-ng directly. Returns raw IPA output string.
 **Arguments:**
 - `text` — text to phonemize
 - `language` — espeak voice
-- `phone_sep` — optional separator (passed as `--sep` to espeak-ng)
+- `phone_sep` — when non-empty, espeak-ng is called with a bare `--sep`: the raw output has phones separated by one space and words by two (the separator itself is applied by `phonemize`)
+
+Raises `Phonemizer::Error` (a `RuntimeError`) when espeak-ng is missing or exits non-zero.
 
 ### `Phonemizer.clear_cache`
 

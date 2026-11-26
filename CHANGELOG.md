@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Fix `phone_sep:`: espeak-ng is now called with a bare `--sep` and the separator is inserted by `stitch`. Passing `--sep=<char>` made espeak-ng use that char between phones but a single space between words, so word boundaries were lost (`"l-e--z-a-m-i"` for `les amis`) and language-tag removal left empty phones (`"l-ə---w-aɪ-f-aɪ-"`). Multi-character separators now work. With `strip_stress`, the espeak liaison `-` is dropped in separator mode too; a user-chosen `-` separator is unaffected
+- Fix lost word boundaries next to punctuation: `"hello, world"` now gives `"həloʊ, wɜːld"` (was `"həloʊ,wɜːld"`); whitespace around punctuation becomes `word_sep`
+- Removing a language tag no longer leaves a doubled separator (`"vi fi"`, was `"vi  fi"`)
+- `workers:` must be a positive Integer; `0` used to return empty strings silently, now raises `ArgumentError`
+- New `Phonemizer::Error` (subclass of `RuntimeError`) for espeak-ng failures; a missing espeak-ng binary raises it with an install hint instead of a raw `Errno::ENOENT`
+- `phonemize` executable: shebang moved to line 1 (it was after the magic comment, so `./bin/phonemize` didn't run and `gem build` warned); reads lines from stdin when given no argument (prints usage if stdin is a terminal); a file is only detected when it is the single argument; invalid options and errors print to stderr and exit 1
+
 ## 0.5.2 - 2026-11-24
 
 - rubocop : `.rubocop.yml` ajouté (TargetRubyVersion 3.1, NewCops désactivés, quotes simples, plafonds Metrics relevés à l'état actuel, BlockLength hors spec/) ; autocorrections appliquées ; 0 offense, specs inchangés

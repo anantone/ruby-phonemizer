@@ -31,3 +31,5 @@ Metrics/PerceivedComplexity:
   Max: 12
 Metrics/ParameterLists:
   Max: 8
+Metrics/ModuleLength:
+  Max: 120

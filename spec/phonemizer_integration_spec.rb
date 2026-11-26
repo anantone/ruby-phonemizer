@@ -79,10 +79,42 @@ RSpec.describe 'Phonemizer integration', skip: !espeak_available? &&
       expect(result).to include('-')
     end
 
+    it 'keeps word boundaries and drops the liaison marker with phone_sep' do
+      result = Phonemizer.phonemize('les amis', language: 'fr-fr', phone_sep: '|')
+      expect(result).to eq('l|e|z a|m|i') # espeak-ng attaches the liaison z to "les"
+    end
+
+    it 'keeps the space after punctuation (hello, world)' do
+      result = Phonemizer.phonemize('hello, world')
+      expect(result).to match(/\A\S+, \S+\z/)
+    end
+
     it 'strips stress marks by default' do
       result = Phonemizer.phonemize('tableau', language: 'fr-fr')
       expect(result).not_to include('ˈ')
       expect(result).not_to include('ˌ')
+    end
+  end
+
+  describe 'bin/phonemize' do
+    let(:bin) { File.expand_path('../bin/phonemize', __dir__) }
+    let(:lib) { File.expand_path('../lib', __dir__) }
+
+    it 'starts with a shebang so it runs directly' do
+      expect(File.readlines(bin).first).to start_with('#!')
+    end
+
+    it 'reads lines from stdin when given no argument' do
+      out, status = Open3.capture2('ruby', "-I#{lib}", bin, '-l', 'fr-fr',
+                                   stdin_data: "les\namis\n")
+      expect(status).to be_success
+      expect(out.lines.size).to eq(2)
+    end
+
+    it 'exits non-zero on -j 0' do
+      _, err, status = Open3.capture3('ruby', "-I#{lib}", bin, '-j', '0', 'hello')
+      expect(status).not_to be_success
+      expect(err).to include('workers')
     end
   end
 
